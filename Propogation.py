@@ -1,61 +1,47 @@
 import math
 
-def forward1Layer(allLayerWeights,hiddenLayers,outputLayer,testData,hiddenLayerAmt,):
-    #------* input Layer forward propogation*-------#
+#forwardProp input (2dArray, 2DArray, float). Returns 2dArray
+#forward propogation. //ABSTRACT -> Runs through network once, propogating values forwards
+#nauralNetwork is the entire network. testData is a 2Darray, img of number, and the value
+def forwardProp(neuralNetwork, testData, learnRate):
+    print("Hello World")
+    neuralNetwork[0] = testData[0]
     weightPointer = 0
-    for node in range(len(hiddenLayers[0])):
+    #first hiddenLayer as it recieves int from input instead of .output from past layer node
+    for node in neuralNetwork[2]:
+        #ABSTRACT -> 'sums' represents the inputValue of each input, times the weight connecting it to hidden node being calculated.
         sums = 0
-        for digit in range(len(testData[0])):
-            sums = sums + (allLayerWeights[0][weightPointer] * testData[0][digit])
+        for digit in neuralNetwork[0]:
+            sums = sums + (neuralNetwork[1][weightPointer] * neuralNetwork[0][digit])
             weightPointer = weightPointer + 1
-        hiddenLayers[0][node].input = sums
-        hiddenLayers[0][node].output = 1/(1+ pow(math.e,(-1 * sums)))
-    #------* Output Layer forward propogation*--------#
+        neuralNetwork[2][node].input = sums
+        #each node is basically a function, the below equation is the output.
+        #in future exchange this with a function or method for interchangable formulas.
+        neuralNetwork[2][node].output = 1/(1+ pow(math.e,(-1 * sums)))
+    
+    #forward Propogation for the rest of hiddenLayers
+    for layer in range(4, len(neuralNetwork), 2):
+        if(neuralNetwork[layer].length == neuralNetwork[2].length):
+            weightPointer = 0
+            for node in (neuralNetwork[layer].length):
+                sums = 0
+                for digit in neuralNetwork[layer - 2].length:
+                    sums = sums + (neuralNetwork[layer-1][weightPointer] * neuralNetwork[layer-2][digit].output)
+                    weightPointer = weightPointer + 1
+                neuralNetwork[layer][node].input = sums
+                neuralNetwork[layer][node].output = 1/(1+ pow(math.e,(-1 * sums)))
+    #forward propogation for output layer
     weightPointer = 0
-    for endNode in range(len(outputLayer)):
+    for node in neuralNetwork[-1]:
         sums = 0
-        for hiddenNodes in range(len(hiddenLayers[0])):
+        for hiddenNodes in neuralNetwork[-3]
             sums = sums + (allLayerWeights[0][weightPointer] * hiddenLayers[0][hiddenNodes].output)
             weightPointer = weightPointer+1
-        outputLayer[endNode].input = sums
-        outputLayer[endNode].output = 1/(1 + pow(math.e,(-1 * sums)))
-    return [allLayerWeights,hiddenLayers,outputLayer]
-def forwardMultiLayer(allLayerWeights,hiddenLayers,outputLayer,testData,hiddenLayerAmt,):
-    #------* input Layer forward propogation*-------#
-    weightPointer = 0
-    for node in range(len(hiddenLayers[0])):
-        sums = 0
-        for digit in range(len(testData)):
-            sums = sums + (allLayerWeights[0][weightPointer] * testData[0][digit])
-            weightPointer = weightPointer + 1
-        hiddenLayers[0][node].input = sums
-        hiddenLayers[0][node].output = 1/(1+ pow(math.e,(-1 * sums)))
+        neuralNetwork[-1][node].input = sums
+        neuralNetwork[-1][node].output = 1/(1 + pow(math.e,(-1 * sums)))
     
-    #------* Hidden Layer forward propogation*--------#
-    for layer in range(hiddenLayerAmt - 1):#for each layer
-        weightPointer = 0
-        for node in range(len(hiddenLayers[layer])): #for each node in the first hidden layer
-            sums = 0
-            for otherNode in range(len(hiddenLayers[layer + 1]) - 1): #for each node in the second hiddenLayer
-                sums = sums + (allLayerWeights[layer + 1][weightPointer] * hiddenLayers[layer][otherNode].output)
-                weightPointer = weightPointer + 1
-            hiddenLayers[layer + 1][node].input = sums
-            hiddenLayers[layer + 1][node].output = 1/(1+ pow(math.e,(-1 * sums)))
-    #------* Output Layer forward propogation*--------#
-    weightPointer = 0
-    for endNode in range(len(outputLayer)):
-        sums = 0
-        if(hiddenLayerAmt > 1):
-            for hiddenNodes in range(len(hiddenLayers[-1])):
-                sums = sums + (allLayerWeights[-1][weightPointer] * hiddenLayers[-1][hiddenNodes].output)
-                weightPointer = weightPointer+1
-        else:
-            for hiddenNodes in range(len(hiddenLayers[0])):
-                sums = sums + (allLayerWeights[0][weightPointer] * hiddenLayers[0][hiddenNodes].output)
-                weightPointer = weightPointer+1
-        outputLayer[endNode].input = sums
-        outputLayer[endNode].output = 1/(1 + pow(math.e,(-1 * sums)))
-    return [allLayerWeights,hiddenLayers,outputLayer]
+    return neuralNetwork
+
 
 def back1Layer(allLayerWeights,hiddenLayers,outputLayer,testData,learnRate):
     #------* Output Layer back propogation*--------#
