@@ -77,8 +77,8 @@ class main:
         while index < len(validationData):
             expectedValue = validationData[index][1]
             testedData = validationData[index]
-            tempArray = Propogation.forward1Layer(allLayerWeights,nerualNetwork,outputLayer,testedData,hiddenLayerAmt)
-            tempOutputLayer = tempArray[2]
+            nerualNetwork = Propogation.forwardPropogation(nerualNetwork,testedData)
+            tempOutputLayer = nerualNetwork[-1]
             correctIndex = -1
             greatestOutput = -1
             for i in range(len(tempOutputLayer)):
@@ -109,8 +109,8 @@ for i in range(iterations):
         #print(outputLayer[5].error)
     while counter < len(testData):
         row1testData = testData[counter]
-        tempArray = Propogation.forwardMultiLayer(nerualNetwork,row1testData,learnRate)
-        tempArray = Propogation.backMultiLayer(allLayerWeights,nerualNetwork,outputLayer,row1testData,hiddenLayerAmt,learnRate)
+        nerualNetwork = Propogation.forwardMultiLayer(nerualNetwork,row1testData)
+        nerualNetwork = Propogation.backMultiLayer(nerualNetwork,row1testData,learnRate)
         counter = counter + 1
 
 score = main.checkAcuracy()
