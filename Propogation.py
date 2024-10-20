@@ -34,7 +34,7 @@ def forwardProp(neuralNetwork, testData):
     weightPointer = 0
     for node in neuralNetwork[-1]:
         sums = 0
-        for hiddenNodes in neuralNetwork[-3]
+        for hiddenNodes in neuralNetwork[-3]:
             sums = sums + (allLayerWeights[0][weightPointer] * hiddenLayers[0][hiddenNodes].output)
             weightPointer = weightPointer+1
         neuralNetwork[-1][node].input = sums
@@ -55,7 +55,7 @@ def backwardProp(neuralNetwork,testData, learnRate):
         for hiddenLayerNode in range(len(neuralNetwork[-3])):
             changeWeightValue = neuralNetwork[-3][hiddenLayerNode].output * learnRate * tempError
             neuralNetwork[-2][weightPointer] = neuralNetwork[-2][weightPointer] + changeWeightValue
-            weightPointer ++
+            weightPointer = weightPointer + 1
     # hiddenLayer back propogation. change nodes then weights on repeat. 
     for layer in range(-3, len(neuralNetwork), -2):
         #stop early due to dataType input problems(I'm a dumbass)
@@ -67,7 +67,7 @@ def backwardProp(neuralNetwork,testData, learnRate):
             totalError = 0
             for rightNode in range(len(neuralNetwork[layer + 2])):
                 totalError = totalError + (neuralNetwork[layer + 2][rightNode].error * neuralNetwork[layer + 1][weightPointer])
-                weightPointer ++
+                weightPointer = weightPointer + 1
             error = neuralNetwork[layer][hiddenNode].output * (1-neuralNetwork[layer][hiddenNode].output) * totalError
             neuralNetwork[layer][hiddenNode].error = error
         #change weight error in row that comes b4 hiddenNodes row
@@ -75,7 +75,7 @@ def backwardProp(neuralNetwork,testData, learnRate):
             for rightNode in range(len(neuralNetwork[layer])):
                 changeWeightValue = neuralNetwork[layer - 2][leftNode].output * learnRate * neuralNetwork[layer][rightNode].error
                 neuralNetwork[layer - 1][weightPointer] = neuralNetwork[layer - 1][weightPointer] + changeWeightValue
-                weightPointer++ 
+                weightPointer = weightPointer + 1
 
     #For input layer back propogation
     weightPointer = 0
@@ -84,12 +84,12 @@ def backwardProp(neuralNetwork,testData, learnRate):
         totalError = 0
         for node in range(len(neuralNetwork[4])):
             totalError = totalError + (neuralNetwork[4][node].error * neuralNetwork[3][weightPointer])
-            weightPointer ++
+            weightPointer = weightPointer + 1
         error = neuralNetwork[2][changedNode].output * (1-neuralNetwork[2][changedNode].output) * totalError
         neuralNetwork[2][changedNode].error = error
         for digit in range(len(neuralNetwork[0])):
             changeWeightValue = learnRate * error * testData[0][digit]
             neuralNetwork[1][oWPointer] += changeWeightValue
-            oWPointer++
+            oWPointer = oWPointer + 1
 
     return neuralNetwork

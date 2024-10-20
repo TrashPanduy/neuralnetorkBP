@@ -4,73 +4,68 @@ import random
 #mostly for Eulers number 
 import math
 
-#Neural network variables
-#implements xyz calculation
-hiddenLayerAmt = 2
-hiddenNodesPerLayer = 17
-outputNodesAmt = 10
-inputNodesAmt = 15
-learnRate = .07
-iterations = 7000
-weightsLower = -0.7
-weightsHigher = 0.7
-nerualNetwork = main.initializenerualNetwork()
-outputLayer = main.initializeOutputLayers()
-allLayerWeights = main.initializeWeights()
-testData = dataProcessing.initializeData().getLearningData()
-validationData = dataProcessing.initializeData().getValidateData()
-row1Validation = validationData[0]
-row1testData = testData[0]
-
-class node:
+class Node:
     def __init__(self, input, output, error):
         self.input = input
         self.output = output
         self.error = error
 
-class main:
+class Main:
+    
     #initialize network nodes & random weights according to hyperValues
+    @staticmethod
     def initializeLayers():
-        nerualNetwork = [[]]
+        neuralNetwork = [[]]
         #generate input nodes
         tempArr = []
         for layerVals in range(inputNodesAmt):
-            newNode = node(None,None,None)
+            newNode = Node(None,None,None)
             tempArr.append(newNode)
         #add input nodes to array
-        nerualNetwork.append(tempArr)
+        neuralNetwork.append(tempArr)
 
-        #generate hiddenLayer nodes
-        tempHiddenNodes = [[]]
-        for layers in hiddenLayerAmt:
-            for node in hiddenNodesPerLayer:
-                newNode = node(None,None,None)
-                tempHiddenNodes[layers].append(newNode)
-
-        #add hiddenLayer nodes and weights to network
-        for layers in hiddenLayerAmt:
-            #generate weights
-            tempArr = []
-            for value in range(inputNodesAmt * hiddenNodesPerLayer):
-                tempArr.append(random.uniform(weightsLower,weightsHigher))
-            #add weights then nodes. Last row will be nodes.
-            neuralNetwork.append(tempArr)
-            neuralNetwork.append(tempHiddenNodes[layers])
-        #add new row of weights to leave only output nodes ungenerated
+        #generate input to hidden layer weights
         tempArr = []
-            for value in range(inputNodesAmt * hiddenNodesPerLayer):
-                tempArr.append(random.uniform(weightsLower,weightsHigher))
-            neuralNetwork.append(tempArr)
-        
+        for value in range(inputNodesAmt * hiddenNodesPerLayer):
+            tempArr.append(random.uniform(weightsLower,weightsHigher))
+        neuralNetwork.append(tempArr)
+
+        #generate hiddenLayer nodes 
+        tempHiddenArr = [[]]
+        for layers in range(hiddenLayerAmt):
+            tempArr = []
+            for node in range(hiddenNodesPerLayer):
+                newNode = Node(None,None,None)
+                tempArr.append(newNode)
+            tempHiddenArr.append(tempArr)
+
+        #generate weights
+        tempWeights = [[]]
+        if(hiddenLayerAmt > 1):
+            for layers in range(hiddenLayerAmt - 1):
+                tempArr = []
+                for value in range(inputNodesAmt * hiddenNodesPerLayer):
+                    tempArr.append(random.uniform(weightsLower,weightsHigher))
+                tempWeights.append(tempArr)
+        tempArr = []
+        for value in range(outputNodesAmt * hiddenNodesPerLayer):
+            tempArr.append(random.uniform(weightsLower,weightsHigher))
+        tempWeights.append(tempArr)
+
+        for row in range(len(tempHiddenArr)):
+            neuralNetwork.append(tempHiddenArr[row])
+            neuralNetwork.append(tempWeights[row])
         #generate outputNodes
         tempArr = []
-        for outputNodes in outputNodesAmt:
-            newNode = node(None,None,None)
+        for outputNodes in range(outputNodesAmt):
+            newNode = Node(None,None,None)
             tempArr.append(newNode)
         neuralNetwork.append(tempArr)
-        #nerualNetwork has been fully generated.
-        return nerualNetwork
-
+        #neuralNetwork has been fully generated.
+        print("network setup complete")
+        return neuralNetwork
+    
+    @staticmethod
     def checkAcuracy():
         index = 0
         count = 0 
@@ -100,19 +95,43 @@ class main:
         return count
 
 
+
+
+#Neural network variables
+hiddenLayerAmt = 2
+hiddenNodesPerLayer = 17
+outputNodesAmt = 10
+inputNodesAmt = 15
+learnRate = .07
+iterations = 7000
+weightsLower = -0.7
+weightsHigher = 0.7
+nerualNetwork = Main.initializeLayers()
+testData = dataProcessing.initializeData().getLearningData()
+validationData = dataProcessing.initializeData().getValidateData()
+row1Validation = validationData[0]
+row1testData = testData[0]
+
+
+
+
+
 for i in range(iterations):
+    
     counter = 0
     random.shuffle(testData)
     random.shuffle(testData)
-    if i % 1000 == 0:
+    #if i % 1000 == 0:
         #print(nerualNetwork[0][5].error)
         #print(outputLayer[5].error)
     while counter < len(testData):
         row1testData = testData[counter]
-        nerualNetwork = Propogation.forwardMultiLayer(nerualNetwork,row1testData)
-        nerualNetwork = Propogation.backMultiLayer(nerualNetwork,row1testData,learnRate)
+        nerualNetwork = Propogation.forwardProp(nerualNetwork,row1testData)
+        nerualNetwork = Propogation.backwardProp(nerualNetwork,row1testData,learnRate)
         counter = counter + 1
 
-score = main.checkAcuracy()
+
+score = Main.checkAcuracy()
 print(score, "/",len(validationData))
 print("done")
+

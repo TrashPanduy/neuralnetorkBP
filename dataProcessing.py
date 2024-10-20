@@ -3,7 +3,7 @@ class initializeData:
     #outputs a 2d array [example to learn][expected output]; takes a string file name such as fileName.txt
     def getLearningData(learnFileName):
         #open and split data in file into lines to be read  
-        learningDataFile = open('/Users/michaelowen/VSCode_Files/neuralNetwork/dataPackets/learningData.txt','r')
+        learningDataFile = open('/Users/michaelowen/VSCode_Files/neuralnetorkBP/dataPackets/learningData.txt','r')
         learnDataLine = learningDataFile.read().splitlines()
         
         learningDataArr = []        #final array to be populated
@@ -22,7 +22,7 @@ class initializeData:
     #outputs a 2d array [example to learn][expected output]; takes a string file name such as fileName.txt
     def getValidateData(ValidateFileName):
         #open and split data in file into lines to be read   
-        ValidationDataFile = open('/Users/michaelowen/VSCode_Files/neuralNetwork/dataPackets/validationData.txt','r')
+        ValidationDataFile = open('/Users/michaelowen/VSCode_Files/neuralnetorkBP/dataPackets/validationData.txt','r')
         validateDataLine = ValidationDataFile.read().splitlines()
         
         validateDataArr = []    #final array to be populated
