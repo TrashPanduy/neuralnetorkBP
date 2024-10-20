@@ -1,9 +1,9 @@
 import math
 
-#forwardProp input (2dArray, 2DArray, float). Returns 2dArray
+#forwardProp input (2dArray, 2DArray). Returns 2dArray(neuralNetwork)
 #forward propogation. //ABSTRACT -> Runs through network once, propogating values forwards
 #nauralNetwork is the entire network. testData is a 2Darray, img of number, and the value
-def forwardProp(neuralNetwork, testData, learnRate):
+def forwardProp(neuralNetwork, testData):
     print("Hello World")
     neuralNetwork[0] = testData[0]
     weightPointer = 0
@@ -42,77 +42,54 @@ def forwardProp(neuralNetwork, testData, learnRate):
     
     return neuralNetwork
 
-
-def back1Layer(allLayerWeights,hiddenLayers,outputLayer,testData,learnRate):
-    #------* Output Layer back propogation*--------#
+#backwardProp input (2dArray, 2DArray, float). Returns 2dArray(neuralNetwork)
+#backward propogation. //ABSTRACT -> goes through the network backwards in order to change weights and errors to their respective values
+# variable 'neuralNetwork' is the entire network. 'testData' is 2Darray with first row being image data and second what is represents. 'learnRate' self explanatory
+def backwardProp(neuralNetwork,testData, learnRate):
+    #outputLayer backpropogation. Same for all feed forward networks
     tempError = 0
     weightPointer = 0
-    for outputNode in range(len(outputLayer)):
-        tempError = outputLayer[outputNode].output * (1-outputLayer[outputNode].output)*(testData[1][outputNode] - outputLayer[outputNode].output)
-        outputLayer[outputNode].error = tempError
-        for hiddenNode in range(len(hiddenLayers[0])):
-            changeWeightValue = hiddenLayers[0][hiddenNode].output * learnRate * tempError
-            allLayerWeights[0][weightPointer] = allLayerWeights[0][weightPointer] + changeWeightValue
-            weightPointer = weightPointer + 1
-    #------* Input Layer back propogation*--------#
-    weightPointer = 0
-    otherweightPointer = 0
-    for changeNode in range(len(hiddenLayers[0])): #for each node in node list RIGHT
+    for outputNode in range(len(neuralNetwork[-1])):
+        tempError = neuralNetwork[-1][outputNode].output * (1-neuralNetwork[-1][outputNode].output) * (testData[1][outputNode] - neuralNetwork[-1][outputNode].output)
+        neuralNetwork[-1][outputNode].error = tempError
+        for hiddenLayerNode in range(len(neuralNetwork[-3])):
+            changeWeightValue = neuralNetwork[-3][hiddenLayerNode].output * learnRate * tempError
+            neuralNetwork[-2][weightPointer] = neuralNetwork[-2][weightPointer] + changeWeightValue
+            weightPointer ++
+    # hiddenLayer back propogation. change nodes then weights on repeat. 
+    for layer in range(-3, len(neuralNetwork), -2):
+        #stop early due to dataType input problems(I'm a dumbass)
+        if len(neuralNetwork) + layer == 2:
+            break
+        weightPointer = 0
+        #change hiddenNode error
+        for hiddenNode in range(len(neuralNetwork[layer])):
             totalError = 0
-            for node in range(len(outputLayer)):
-                totalError = totalError + (outputLayer[node].error * allLayerWeights[1][weightPointer])
-                weightPointer = weightPointer + 1
-            error = hiddenLayers[0][changeNode].output * (1-hiddenLayers[0][changeNode].output) * totalError
-            hiddenLayers[0][changeNode].error = error
-            for digit in range(len(testData[0])):
-                changeWeightValue = learnRate * error * testData[0][digit]
-                allLayerWeights[0][otherweightPointer] = allLayerWeights[0][otherweightPointer] + changeWeightValue
-                otherweightPointer = otherweightPointer + 1
-    return [allLayerWeights,hiddenLayers,outputLayer]
-def backMultiLayer(allLayerWeights,hiddenLayers,outputLayer,testData,hiddenLayerAmt,learnRate):
-    #------* Output Layer back propogation*--------#
-    tempError = 0
-    weightPointer = 0
-    for outputNode in range(len(outputLayer)):
-        tempError = outputLayer[outputNode].output * (1-outputLayer[outputNode].output)*(testData[1][outputNode] - outputLayer[outputNode].output)
-        outputLayer[outputNode].error = tempError
-        for hiddenNode in range(len(hiddenLayers[-1])):
-            changeWeightValue = hiddenLayers[-1][hiddenNode].output * learnRate * tempError
-            allLayerWeights[-1][weightPointer] = allLayerWeights[-1][weightPointer] + changeWeightValue
-            weightPointer = weightPointer + 1
-    #------* Hidden Layer back propogation*--------#
-    weightPointer = 0
-    #adjust last hiddenLayer error
-    for node in range(len(hiddenLayers[-1])): 
-        tempError = 0
-        for outputNode in range(len(outputLayer) - 1):
-            tempError = tempError + (outputLayer[outputNode].error * allLayerWeights[-1][weightPointer])
-            weightPointer = weightPointer + 1
-        nodeError = (hiddenLayers[-1][node].output * (1-hiddenLayers[-1][node].output) * tempError)
-        hiddenLayers[-1][node].error = nodeError
-    #loop through from end -1 to 0 and adjust weight / error (central bit of stuff)
-    for layer in reversed(range(hiddenLayerAmt - 1)):
-        weightPointer = 0
-        #adjust weight
-        for node in range(len(hiddenLayers[layer])):
-            for rightNode in range(len(hiddenLayers[layer + 1])):
-                changeWeightValue = hiddenLayers[layer + 1][rightNode].error * learnRate * hiddenLayers[layer][node].output
-                allLayerWeights[layer + 1][weightPointer] = allLayerWeights[layer + 1][weightPointer] + changeWeightValue
-                weightPointer = weightPointer + 1
-        #adjust node error
-        weightPointer = 0
-        for node in range(len(hiddenLayers[layer])):
-            tempError = 0
-            for rightNode in range(len(hiddenLayers[layer + 1])):
-                tempError = tempError + (hiddenLayers[layer + 1][rightNode]).error * allLayerWeights[layer + 1][weightPointer]
-                weightPointer = weightPointer + 1
-            nodeError = (hiddenLayers[layer][node].output * (1-hiddenLayers[layer][node].output) * tempError)
-            hiddenLayers[layer][node].error = nodeError
-    weightPointer = 0
-    for digit in range(len(testData[0])):
-        for node in range(len(hiddenLayers[0])):
-            changeWeightValue = hiddenLayers[0][node].error * learnRate * digit
-            allLayerWeights[0][weightPointer] = allLayerWeights[0][weightPointer] + changeWeightValue
-            weightPointer = weightPointer + 1
-    return [allLayerWeights,hiddenLayers,outputLayer]
+            for rightNode in range(len(neuralNetwork[layer + 2])):
+                totalError = totalError + (neuralNetwork[layer + 2][rightNode].error * neuralNetwork[layer + 1][weightPointer])
+                weightPointer ++
+            error = neuralNetwork[layer][hiddenNode].output * (1-neuralNetwork[layer][hiddenNode].output) * totalError
+            neuralNetwork[layer][hiddenNode].error = error
+        #change weight error in row that comes b4 hiddenNodes row
+        for leftNode in range(len(neuralNetwork[layer - 2])):
+            for rightNode in range(len(neuralNetwork[layer])):
+                changeWeightValue = neuralNetwork[layer - 2][leftNode].output * learnRate * neuralNetwork[layer][rightNode].error
+                neuralNetwork[layer - 1][weightPointer] = neuralNetwork[layer - 1][weightPointer] + changeWeightValue
+                weightPointer++ 
 
+    #For input layer back propogation
+    weightPointer = 0
+    oWPointer = 0
+    for changedNode in range(len(neuralNetwork[2])):
+        totalError = 0
+        for node in range(len(neuralNetwork[4])):
+            totalError = totalError + (neuralNetwork[4][node].error * neuralNetwork[3][weightPointer])
+            weightPointer ++
+        error = neuralNetwork[2][changedNode].output * (1-neuralNetwork[2][changedNode].output) * totalError
+        neuralNetwork[2][changedNode].error = error
+        for digit in range(len(neuralNetwork[0])):
+            changeWeightValue = learnRate * error * testData[0][digit]
+            neuralNetwork[1][oWPointer] += changeWeightValue
+            oWPointer++
+
+    return neuralNetwork
