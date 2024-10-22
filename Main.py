@@ -5,7 +5,7 @@ import random
 import math
 
 class Node:
-    def __init__(self, input, output, error):
+    def __init__(self, input: float, output: float, error: float):
         self.input = input
         self.output = output
         self.error = error
@@ -51,6 +51,9 @@ class Main:
         for value in range(outputNodesAmt * hiddenNodesPerLayer):
             tempArr.append(random.uniform(weightsLower,weightsHigher))
         tempWeights.append(tempArr)
+
+        del tempHiddenArr[0]
+        del tempWeights[0]
 
         for row in range(len(tempHiddenArr)):
             neuralNetwork.append(tempHiddenArr[row])
@@ -99,11 +102,11 @@ class Main:
 
 #Neural network variables
 hiddenLayerAmt = 2
-hiddenNodesPerLayer = 17
+hiddenNodesPerLayer = 15
 outputNodesAmt = 10
 inputNodesAmt = 15
 learnRate = .07
-iterations = 7000
+iterations = 5000
 weightsLower = -0.7
 weightsHigher = 0.7
 nerualNetwork = Main.initializeLayers()
@@ -129,6 +132,7 @@ for i in range(iterations):
         nerualNetwork = Propogation.forwardProp(nerualNetwork,row1testData)
         nerualNetwork = Propogation.backwardProp(nerualNetwork,row1testData,learnRate)
         counter = counter + 1
+        print("iteration complete")
 
 
 score = Main.checkAcuracy()
