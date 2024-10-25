@@ -68,14 +68,15 @@ class Main:
         print("network setup complete")
         return neuralNetwork
     
+    #takes a 2dArray/ the neural network
     @staticmethod
-    def checkAcuracy():
+    def checkAcuracy(nerualNetwork):
         index = 0
         count = 0 
         while index < len(validationData):
             expectedValue = validationData[index][1]
             testedData = validationData[index]
-            nerualNetwork = Propogation.forwardPropogation(nerualNetwork,testedData)
+            nerualNetwork = Propogation.forwardProp(nerualNetwork,testedData)
             tempOutputLayer = nerualNetwork[-1]
             correctIndex = -1
             greatestOutput = -1
@@ -138,7 +139,7 @@ for i in range(iterations):
         counter = counter + 1
 
 
-score = Main.checkAcuracy()
+score = Main.checkAcuracy(nerualNetwork)
 print(score, "/",len(validationData))
 print("done")
 
