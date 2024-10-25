@@ -4,12 +4,7 @@ import math
 #forward propogation. //ABSTRACT -> Runs through network once, propogating values forwards
 #nauralNetwork is the entire network. testData is a 2Darray, img of number, and the value
 def forwardProp(neuralNetwork, testData):
-    print("Hello World")
-    neuralNetwork[0] = testData[0]
-    del neuralNetwork[1]
     weightPointer = 0
-    for row in range(len(neuralNetwork)):
-        print(neuralNetwork[row][0])
     #first hiddenLayer as it recieves int from input instead of .output from past layer node
     for node in range(len(neuralNetwork[2])):
         #ABSTRACT -> 'sums' represents the inputValue of each input, times the weight connecting it to hidden node being calculated.

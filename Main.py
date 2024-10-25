@@ -19,8 +19,8 @@ class Main:
         #generate input nodes
         tempArr = []
         for layerVals in range(inputNodesAmt):
-            newNode = Node(None,None,None)
-            tempArr.append(newNode)
+            inputValue = -1
+            tempArr.append(inputValue)
         #add input nodes to array
         neuralNetwork.append(tempArr)
 
@@ -116,23 +116,26 @@ row1Validation = validationData[0]
 row1testData = testData[0]
 
 
+#don't ask why this is here, it just needs to be
+row1testData = testData[0]
+nerualNetwork[0] = row1testData[0]
+del nerualNetwork[1]
 
-
-
+#learning looping
 for i in range(iterations):
-    
     counter = 0
     random.shuffle(testData)
     random.shuffle(testData)
-    #if i % 1000 == 0:
-        #print(nerualNetwork[0][5].error)
-        #print(outputLayer[5].error)
+    if i % 1000 == 0:
+        print(nerualNetwork[2][5].error)
+        print("weight",nerualNetwork[1][10])
+        
     while counter < len(testData):
         row1testData = testData[counter]
+        nerualNetwork[0] = row1testData[0]
         nerualNetwork = Propogation.forwardProp(nerualNetwork,row1testData)
         nerualNetwork = Propogation.backwardProp(nerualNetwork,row1testData,learnRate)
         counter = counter + 1
-        print("iteration complete")
 
 
 score = Main.checkAcuracy()
