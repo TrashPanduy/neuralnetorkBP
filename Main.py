@@ -98,48 +98,45 @@ class Main:
             index += 1
         return count
 
+if __name__ == "__main__":
+    #Neural network variables
+    hidden_layer_amt = 2
+    hidden_nodes_per_layer = 15
+    output_nodes_amt = 10
+    input_nodes_amt = 15
+    learn_rate = .07
+    iterations = 5000
+    weights_lower_bound = -0.7
+    weights_upper_bound = 0.7
+    nerual_network = Main.initializeLayers()
+    test_data = dataProcessing.initializeData().getLearningData()
+    validation_data = dataProcessing.initializeData().getValidateData()
+    row1_validation = validation_data[0]
+    row1_test_data = test_data[0]
 
 
+    #don't ask why this is here, it just needs to be
+    row1_test_data = test_data[0]
+    nerual_network[0] = row1_test_data[0]
+    del nerual_network[1]
 
-#Neural network variables
-hidden_layer_amt = 2
-hidden_nodes_per_layer = 15
-output_nodes_amt = 10
-input_nodes_amt = 15
-learn_rate = .07
-iterations = 5000
-weights_lower_bound = -0.7
-weights_upper_bound = 0.7
-nerual_network = Main.initializeLayers()
-test_data = dataProcessing.initializeData().getLearningData()
-validation_data = dataProcessing.initializeData().getValidateData()
-row1_validation = validation_data[0]
-row1_test_data = test_data[0]
-
-
-#don't ask why this is here, it just needs to be
-row1_test_data = test_data[0]
-nerual_network[0] = row1_test_data[0]
-del nerual_network[1]
-
-#learning looping
-for i in range(iterations):
-    counter = 0
-    random.shuffle(test_data)
-    random.shuffle(test_data)
-    if i % 1000 == 0:
-        print(nerual_network[2][5].error)
-        print("weight",nerual_network[1][10])
-        
-    while counter < len(test_data):
-        row1_test_data = test_data[counter]
-        nerual_network[0] = row1_test_data[0]
-        nerual_network = Propogation.forwardProp(nerual_network,row1_test_data)
-        nerual_network = Propogation.backwardProp(nerual_network,row1_test_data,learn_rate)
-        counter = counter + 1
+    #learning looping
+    for i in range(iterations):
+        counter = 0
+        random.shuffle(test_data)
+        random.shuffle(test_data)
+        if i % 1000 == 0:
+            print(nerual_network[2][5].error)
+            print("weight",nerual_network[1][10])
+            
+        while counter < len(test_data):
+            row1_test_data = test_data[counter]
+            nerual_network[0] = row1_test_data[0]
+            nerual_network = Propogation.forwardProp(nerual_network,row1_test_data)
+            nerual_network = Propogation.backwardProp(nerual_network,row1_test_data,learn_rate)
+            counter = counter + 1
 
 
-score = Main.checkAcuracy(nerual_network)
-print(score, "/",len(validation_data))
-print("done")
-
+    score = Main.checkAcuracy(nerual_network)
+    print(score, "/",len(validation_data))
+    print("done")

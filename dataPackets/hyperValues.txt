@@ -1,0 +1,10 @@
+2
+5000
+15
+-0.7
+0.07
+0.7
+15
+10
+learningData.txt
+validationData.txt
