@@ -1,9 +1,5 @@
 #what do I want to add to this?
-#display hypervalues to be changed.(kept in file) CHECK
-#train button to active network training    CHECK
-#output accuracy   
 #output average error  
-#file with data maybe   CHECK
 #access to create data tab
 #display expected and outputed values from network
 #add a function for multiple formulas & implement formula select
@@ -91,11 +87,23 @@ class Controller:
 
     def run_neural_network(self):
         try:
-            # Replace 'script.py' with the path to your Python file
-            subprocess.run(['python3', '/Users/michaelowen/VSCode_Files/neuralnetorkBP/Main.py'], check=True)
+            result = subprocess.run(
+            ['python3', '/Users/michaelowen/VSCode_Files/neuralnetorkBP/Main.py'], 
+            check=True,
+            stdout=subprocess.PIPE,
+            text=True
+            )  # Capture output as string)
+            print("Result from Main.py:", result.stdout.strip())
+            self.display_progress(result.stdout.strip())
         except subprocess.CalledProcessError as e:
             print(f"Error occurred: {e}")
 
+    def display_progress(self, result):
+        display_frame = Frame(self.root,bg="blue")
+        display_frame.pack(padx=10, pady=10)
+
+        avg_error = Label(display_frame, text=result)
+        avg_error.pack(pady=10)
 
 if __name__ == "__main__":
     app = Controller()

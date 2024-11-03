@@ -65,7 +65,6 @@ class Main:
             temp_arr.append(new_node)
         neural_network.append(temp_arr)
         #neural_network has been fully generated.
-        print("network setup complete")
         return neural_network
     
     #takes a 2dArray/ the neural network
@@ -81,21 +80,22 @@ class Main:
             correct_index = -1
             greatest_output = -1
             for i in range(len(temp_output_layer)):
-                print("outputValue: ", temp_output_layer[i].output)
+                #print("outputValue: ", temp_output_layer[i].output)
                 if expected_value[i] == 1:
                     correct_index = i
                 if temp_output_layer[i].output > greatest_output:
                     greatest_output = temp_output_layer[i].output
                     greatest_index = i
             
-            print("number found:", greatest_index)
-            print("expected number:", correct_index)
+            #print("number found:", greatest_index)
+            #print("expected number:", correct_index)
 
             if greatest_index == correct_index:
                 count += 1
 
-            print("value to test for: ", validation_data[index][1])
+            #print("value to test for: ", validation_data[index][1])
             index += 1
+        
         return count
 
 if __name__ == "__main__":
@@ -125,9 +125,9 @@ if __name__ == "__main__":
         counter = 0
         random.shuffle(test_data)
         random.shuffle(test_data)
-        if i % 1000 == 0:
-            print(nerual_network[2][5].error)
-            print("weight",nerual_network[1][10])
+        #if i % 1000 == 0:
+            #print(nerual_network[2][5].error)
+            #print("weight",nerual_network[1][10])
             
         while counter < len(test_data):
             row1_test_data = test_data[counter]
@@ -138,5 +138,5 @@ if __name__ == "__main__":
 
 
     score = Main.checkAcuracy(nerual_network)
+    print("Training Complete, Accuracy:")
     print(score, "/",len(validation_data))
-    print("done")
