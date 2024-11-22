@@ -6,12 +6,14 @@
 #fully setup output layer functionality for increased dataRange
 import subprocess
 from tkinter import *
+from Main import trainNetwork,initializeLayers,checkAcuracy,Node
 
 class Controller:
     def __init__(self):
         self.root = Tk()
         self.root.title("Neural Network Controller")
         self.root.geometry('1100x800')
+        self.label=None
 
         # Create a frame
         self.frame = Frame(self.root)
@@ -86,24 +88,31 @@ class Controller:
         return values
 
     def run_neural_network(self):
+        self.display_progress()
+        self.root.update()
         try:
-            result = subprocess.run(
-            ['python3', '/Users/michaelowen/VSCode_Files/neuralnetorkBP/Main.py'], 
-            check=True,
-            stdout=subprocess.PIPE,
-            text=True
-            )  # Capture output as string)
-            print("Result from Main.py:", result.stdout.strip())
-            self.display_progress(result.stdout.strip())
+            tempArr = []
+            for entry in self.entries:
+                tempArr.append(entry.get())
+            accuracy = trainNetwork(int(tempArr[0]),int(tempArr[1]),int(tempArr[2]),float(tempArr[3]),float(tempArr[4]),float(tempArr[5]),int(tempArr[6]),int(tempArr[7]))
+            print(accuracy)
         except subprocess.CalledProcessError as e:
             print(f"Error occurred: {e}")
+        
+        self.display_progress(str(accuracy) + " Out of 26")
 
-    def display_progress(self, result):
-        display_frame = Frame(self.root,bg="blue")
-        display_frame.pack(padx=10, pady=10)
+    def display_progress(self, result="training... "):
+        # Create a new frame only once if it doesn't exist, else update the existing label
+        if self.label is None:
+            display_frame = Frame(self.root, bg="blue")
+            display_frame.pack(padx=10, pady=10)
 
-        avg_error = Label(display_frame, text=result)
-        avg_error.pack(pady=10)
+            # Create the label and keep a reference to it
+            self.label = Label(display_frame, text=result)
+            self.label.pack(pady=10)
+        else:
+            # Update the existing label's text
+            self.label.config(text=result)
 
 if __name__ == "__main__":
     app = Controller()
